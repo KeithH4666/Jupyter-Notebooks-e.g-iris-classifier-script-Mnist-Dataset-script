@@ -8,7 +8,7 @@ from keras.utils import np_utils
 import sklearn.preprocessing as pre
 
 
-def buildModel(){
+def buildModel()
 # Start a neural network, building it by layers.
     model = kr.models.Sequential()
 
@@ -43,5 +43,5 @@ def buildModel(){
     outputs = encoder.transform(train_lbl)
 
     print(train_lbl[0], outputs[0])
-}
+
 
