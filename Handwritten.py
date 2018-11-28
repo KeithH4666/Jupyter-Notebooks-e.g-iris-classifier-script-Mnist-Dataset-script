@@ -13,10 +13,30 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import PIL
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageTk
+import tkinter as tk
 
 ## Function to build the model, need to have a folder called dataset on same level as the script
 ## .gz files must be located in here
+
+## Reference: https://www.youtube.com/watch?v=OdDCsxfI8S0
+width = 200
+height = 200
+center = height//2
+white = (255, 255, 255)
+green = (0,128,0)
+
+def save():
+    filename = "image.png"
+    image1.save(filename)
+
+def paint(event):
+    # python_green = "#476042"
+    x1, y1 = (event.x - 1), (event.y - 1)
+    x2, y2 = (event.x + 1), (event.y + 1)
+    cv.create_oval(x1, y1, x2, y2, fill="black",width=5)
+    draw.line([x1, y1, x2, y2],fill="black",width=5)
+
 def buildModel(imageFile):
 
     model = kr.models.Sequential()
@@ -81,6 +101,37 @@ def convertImage(imagefile):
     ## Send the ready array to our build model function
     buildModel(im)
 
+def drawCanvas():
+
+
+root = tk.Tk()
+
+# Tkinter create a canvas to draw on
+cv = tk.Canvas(root, width=width, height=height, bg='white')
+cv.pack()
+
+    # PIL create an empty image and draw object to draw on
+    # memory only, not visible
+    image1 = PIL.Image.new("RGB", (width, height), white)
+    draw = ImageDraw.Draw(image1)
+
+    # do the Tkinter canvas drawings (visible)
+    # cv.create_line([0, center, width, center], fill='green')
+
+    cv.pack()
+    cv.bind("<B1-Motion>", paint)
+
+    # do the PIL image/draw (in memory) drawings
+    # draw.line([0, center, width, center], green)
+
+    # PIL image can be saved as .png .jpg .gif or .bmp file (among others)
+    # filename = "my_drawing.png"
+    # image1.save(filename)
+    button=tk.Button(text="save",command=save)
+    button.pack()
+    root.mainloop()
+
+
 ######### Menu ###########
 print("Welcome to Keiths Digit Recognition Script")
 print("------------------------------------------")
@@ -91,5 +142,9 @@ print("------------------------------------------")
 ## Ready image gets sent to the buildmodel() function
 convertImage(userInput)
 print("Thanks for using my program!, RE-run to try again.")
+
+#!/usr/bin/python
+
+
 
 

@@ -13,10 +13,29 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import PIL
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageTk
+import tkinter as tk
 
 ## Function to build the model, need to have a folder called dataset on same level as the script
 ## .gz files must be located in here
+
+width = 200
+height = 200
+center = height//2
+white = (255, 255, 255)
+green = (0,128,0)
+
+def save():
+    filename = "image.png"
+    image1.save(filename)
+
+def paint(event):
+    # python_green = "#476042"
+    x1, y1 = (event.x - 1), (event.y - 1)
+    x2, y2 = (event.x + 1), (event.y + 1)
+    cv.create_oval(x1, y1, x2, y2, fill="black",width=5)
+    draw.line([x1, y1, x2, y2],fill="black",width=5)
+
 def buildModel(imageFile):
 
     model = kr.models.Sequential()
@@ -45,29 +64,15 @@ def buildModel(imageFile):
     train_img =  np.array(list(train_img[16:])).reshape(60000, 28, 28).astype(np.uint8)/ 255.0
     train_lbl =  np.array(list(train_lbl[ 8:])).astype(np.uint8)
 
-    ############################# TEST DATA ################################
-
-    with gzip.open('dataset/t10k-images-idx3-ubyte.gz', 'rb') as f:
-        test_img = f.read()
-
-    with gzip.open('dataset/t10k-labels-idx1-ubyte.gz', 'rb') as f:
-        test_lbl = f.read()
-    
-    test_img =  np.array(list(test_img[16:])).reshape(10000, 784).astype(np.uint8) / 255.0
-    test_lbl =  np.array(list(test_lbl[ 8:])).astype(np.uint8)
-
-    #########################################################################
-
-
     encoder = pre.LabelBinarizer()
     encoder.fit(train_lbl)
     outputs = encoder.transform(train_lbl)
     inputs = train_img.reshape(60000, 784)
 
+    # Train the model with our inputs(Images) and outputs (Labels)
     print("Building neural network - May take a few mins!")
     model.fit(inputs, outputs, epochs=3, batch_size=100)
 
-    #print(encoder.inverse_transform(model.predict(test_img[14:15])))
     print("According to my network your number is: ")
     print(encoder.inverse_transform(model.predict(imageFile)))
 
@@ -94,66 +99,51 @@ def convertImage(imagefile):
 
     ## Send the ready array to our build model function
     buildModel(im)
-###
-    #sess = tf.Session()
 
-    #newImage = tf.image.decode_png(tf.read_file(imagefile), channels = 1)
-    #image_resized = tf.image.resize_images(newImage, [28, 28])
+def drawCanvas():
+    root = tk.Tk()
 
-    #image_resized = sess.run(image_resized)
+    # Tkinter create a canvas to draw on
+    cv = tk.Canvas(root, width=width, height=height, bg='white')
+    cv.pack()
 
-    #image_resized = np.asarray(image_resized, dtype='float')
-    #image_resized = image_resized[:,:,0]
+    # PIL create an empty image and draw object to draw on
+    # memory only, not visible
+    image1 = PIL.Image.new("RGB", (width, height), white)
+    draw = ImageDraw.Draw(image1)
 
-    #image_resized = image_resized.reshape(1, 784)
+    # do the Tkinter canvas drawings (visible)
+    # cv.create_line([0, center, width, center], fill='green')
 
-    #image_resized = np.array(image_resized).astype(np.uint8)/ 255.0
+    cv.pack()
+    cv.bind("<B1-Motion>", paint)
 
-    #buildModel(image_resized)
+    # do the PIL image/draw (in memory) drawings
+    # draw.line([0, center, width, center], green)
 
-    #print("Image converted")
+    # PIL image can be saved as .png .jpg .gif or .bmp file (among others)
+    # filename = "my_drawing.png"
+    # image1.save(filename)
+    button=tk.Button(text="save",command=save)
+    button.pack()
+    root.mainloop()
 
-def saveImages():
-    # Variables for Training Image Set
-    trainImagesBytes1=16
-    trainImagesBytes2=800
-
-    # Variables for Training Labels Set
-    trainLabelsBytes1=8
-    trainLabelsBytes2=9
-    with gzip.open('dataset/t10k-images-idx3-ubyte.gz', 'rb') as file_images:
-        image_contents = file_images.read()
     
-# Using gzip we just imported, open the zip files contained in our data folder
-    with gzip.open('dataset/t10k-labels-idx1-ubyte.gz', 'rb') as file_labels:
-        labels_contents = file_labels.read()
-
-# Loop through the images assigning a corresponding label of the the drawn number
-    for x in range(10):
-        image = ~np.array(list(image_contents[trainImagesBytes1:trainImagesBytes2])).reshape(28,28).astype(np.uint8)
-        labels = np.array(list(labels_contents[trainLabelsBytes1:trainLabelsBytes2])).astype(np.uint8)
-        
-        # Each byte corresponds to a 1 label so increment by 1
-        trainLabelsBytes1+=1
-        trainLabelsBytes2+=1
-        
-        # Every 784 bytes corresponds to a 1 image so increment by 784
-        trainImagesBytes1+=784
-        trainImagesBytes2+=784
-        
-        # Save the images with the following format
-        # E.G train-(0)_[7]
-        # This means the image is from the training set, is the first image in the set and the drawn image is a 7
-        cv2.imwrite('train-(' + str(x) + ')' + '_' + str(labels) + '.png', image)
 
 
-
+######### Menu ###########
 print("Welcome to Keiths Digit Recognition Script")
 print("------------------------------------------")
 userInput = input("Please enter file name/path: ")
 print("------------------------------------------")
+
+## Send image to our converter to make the image readable for model
+## Ready image gets sent to the buildmodel() function
 convertImage(userInput)
 print("Thanks for using my program!, RE-run to try again.")
+
+#!/usr/bin/python
+
 
 
 
