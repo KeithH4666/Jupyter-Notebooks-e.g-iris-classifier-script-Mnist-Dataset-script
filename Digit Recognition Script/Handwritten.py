@@ -19,6 +19,7 @@ import tkinter as tk
 ## Function to build the model, need to have a folder called dataset on same level as the script
 ## .gz files must be located in here
 
+## Canvas all taken from https://www.youtube.com/watch?v=OdDCsxfI8S0
 width = 200
 height = 200
 center = height//2
@@ -100,49 +101,60 @@ def convertImage(imagefile):
     ## Send the ready array to our build model function
     buildModel(im)
 
-def drawCanvas():
-    root = tk.Tk()
+def print_menu():       
+    print("-" , "Welcome to Keiths Digit Recognition Script" , 30 * "-")
+    print("A. Select your own image 1")
+    print("B. Draw you digit")
+    print("C. Exit")
+   
+  
+loop=True      
+  
+while loop:          ## While loop which will keep going until loop = False
+    print_menu()    ## Displays menu
+    choice = input("Enter your choice [A-C]: ")
+    print(choice)
+     
+    if choice == 'A':     
+        userInput = input("Please enter file name/path: ")
+        convertImage(userInput)
+    elif choice=='B':
+        # Canvas taken from https://www.youtube.com/watch?v=OdDCsxfI8S0
+        print("Creating canvas (X canvas off when finished and select option one and enter 'image.png')")
+        root = tk.Tk()
 
-    # Tkinter create a canvas to draw on
-    cv = tk.Canvas(root, width=width, height=height, bg='white')
-    cv.pack()
+        # Tkinter create a canvas to draw on
+        cv = tk.Canvas(root, width=width, height=height, bg='white')
+        cv.pack()
 
-    # PIL create an empty image and draw object to draw on
-    # memory only, not visible
-    image1 = PIL.Image.new("RGB", (width, height), white)
-    draw = ImageDraw.Draw(image1)
+        # PIL create an empty image and draw object to draw on
+        # memory only, not visible
+        image1 = PIL.Image.new("RGB", (width, height), white)
+        draw = ImageDraw.Draw(image1)
 
-    # do the Tkinter canvas drawings (visible)
-    # cv.create_line([0, center, width, center], fill='green')
+        # do the Tkinter canvas drawings (visible)
+        # cv.create_line([0, center, width, center], fill='green')
 
-    cv.pack()
-    cv.bind("<B1-Motion>", paint)
+        cv.pack()
+        cv.bind("<B1-Motion>", paint)
 
-    # do the PIL image/draw (in memory) drawings
-    # draw.line([0, center, width, center], green)
+        # do the PIL image/draw (in memory) drawings
+        # draw.line([0, center, width, center], green)
 
-    # PIL image can be saved as .png .jpg .gif or .bmp file (among others)
-    # filename = "my_drawing.png"
-    # image1.save(filename)
-    button=tk.Button(text="save",command=save)
-    button.pack()
-    root.mainloop()
-
-    
-
-
-######### Menu ###########
-print("Welcome to Keiths Digit Recognition Script")
-print("------------------------------------------")
-userInput = input("Please enter file name/path: ")
-print("------------------------------------------")
-
-## Send image to our converter to make the image readable for model
-## Ready image gets sent to the buildmodel() function
-convertImage(userInput)
-print("Thanks for using my program!, RE-run to try again.")
-
-#!/usr/bin/python
+        # PIL image can be saved as .png .jpg .gif or .bmp file (among others)
+        # filename = "my_drawing.png"
+        # image1.save(filename)
+        button=tk.Button(text="save",command=save)
+        button.pack()
+        root.mainloop()
+    elif choice=='C':
+        print("Exit")
+        
+        ## You can add your code or functions here
+        loop=False # This will make the while loop to end as not value of loop is set to False
+    else:
+        # Any integer inputs other than values 1-5 we print an error message
+        print("Wrong option selection. Enter any key to try again..")
 
 
 
