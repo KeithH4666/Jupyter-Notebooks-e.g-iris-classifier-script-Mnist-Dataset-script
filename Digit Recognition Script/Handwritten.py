@@ -26,6 +26,7 @@ height = 200
 center = height//2
 white = (255, 255, 255)
 green = (0,128,0)
+ModelCreated = False
 
 def save():
     filename = "image.png"
@@ -76,13 +77,15 @@ def buildModel():
 
     # Train the model with our inputs(Images) and outputs (Labels)
     #print("Building neural network - May take a few mins!")
-    model.fit(inputs, outputs, epochs=3, batch_size=100)
+    model.fit(inputs, outputs, epochs=5, batch_size=128)
     model.save('Mnist')
+    
+    print(str(ModelCreated))
 
     #print("According to my network your number is: ")
     #print(encoder.inverse_transform(model.predict(imageFile)))
 
-def test(imageFile):
+def CompareImage(imageFile):
     with gzip.open('dataset/train-labels-idx1-ubyte.gz', 'rb') as f:
         train_lbl = f.read()
     train_lbl =  np.array(list(train_lbl[ 8:])).astype(np.uint8)
@@ -117,11 +120,11 @@ def convertImage(imagefile):
     print("Image successfully converted! Sending To model")
 
     ## Send the ready array to our build model function
-    test(im)
+    CompareImage(im)
 
 def print_menu():       
     print("-" , "Welcome to Keiths Digit Recognition Script" , 30 * "-")
-    print("A. Create Model (Must do this first)")
+    print("A. Create Model (Must do this first) " + "Model Created: " + str(ModelCreated))
     print("B. Select your own image 1")
     print("C. Draw your digit")
     print("D. Exit")
@@ -137,6 +140,7 @@ while loop:          ## While loop which will keep going until loop = False
     if choice == 'A':
         print("Creating Model")
         buildModel()
+        ModelCreated = True
     elif choice == 'B':     
         userInput = input("Please enter file name/path: ")
         convertImage(userInput)
