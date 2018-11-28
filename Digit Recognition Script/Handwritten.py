@@ -123,9 +123,9 @@ def convertImage(imagefile):
     CompareImage(im)
 
 def print_menu():       
-    print("-" , "Welcome to Keiths Digit Recognition Script" , 30 * "-")
+    print("-" * 15 , "Welcome to Keiths Digit Recognition Script" , 15 * "-")
     print("A. Create Model (Must do this first) " + "Model Created: " + str(ModelCreated))
-    print("B. Select your own image 1")
+    print("B. Select your own image")
     print("C. Draw your digit")
     print("D. Exit")
    
