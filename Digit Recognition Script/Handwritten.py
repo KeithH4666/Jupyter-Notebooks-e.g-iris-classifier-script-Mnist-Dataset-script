@@ -6,6 +6,7 @@ from keras.datasets import mnist
 from keras.models import Sequential, load_model
 from keras.layers.core import Dense, Dropout, Activation
 from keras.utils import np_utils
+from keras.models import load_model
 import sklearn.preprocessing as pre
 import sys
 import gzip
@@ -37,7 +38,9 @@ def paint(event):
     cv.create_oval(x1, y1, x2, y2, fill="black",width=5)
     draw.line([x1, y1, x2, y2],fill="black",width=5)
 
-def buildModel(imageFile):
+##############################################################################################
+
+def buildModel():
 
     model = kr.models.Sequential()
 
@@ -70,12 +73,27 @@ def buildModel(imageFile):
     outputs = encoder.transform(train_lbl)
     inputs = train_img.reshape(60000, 784)
 
-    # Train the model with our inputs(Images) and outputs (Labels)
-    print("Building neural network - May take a few mins!")
-    model.fit(inputs, outputs, epochs=3, batch_size=100)
 
+    # Train the model with our inputs(Images) and outputs (Labels)
+    #print("Building neural network - May take a few mins!")
+    model.fit(inputs, outputs, epochs=3, batch_size=100)
+    model.save('Mnist')
+
+    #print("According to my network your number is: ")
+    #print(encoder.inverse_transform(model.predict(imageFile)))
+
+def test(imageFile):
+    with gzip.open('dataset/train-labels-idx1-ubyte.gz', 'rb') as f:
+        train_lbl = f.read()
+    train_lbl =  np.array(list(train_lbl[ 8:])).astype(np.uint8)
+
+    
+    New_model = load_model('Mnist')
     print("According to my network your number is: ")
-    print(encoder.inverse_transform(model.predict(imageFile)))
+    encoder = pre.LabelBinarizer()
+    encoder.fit(train_lbl)
+    print(encoder.inverse_transform(New_model.predict(imageFile)))
+
 
 def convertImage(imagefile):
 
@@ -99,13 +117,14 @@ def convertImage(imagefile):
     print("Image successfully converted! Sending To model")
 
     ## Send the ready array to our build model function
-    buildModel(im)
+    test(im)
 
 def print_menu():       
     print("-" , "Welcome to Keiths Digit Recognition Script" , 30 * "-")
-    print("A. Select your own image 1")
-    print("B. Draw you digit")
-    print("C. Exit")
+    print("A. Create Model (Must do this first)")
+    print("B. Select your own image 1")
+    print("C. Draw your digit")
+    print("D. Exit")
    
   
 loop=True      
@@ -115,10 +134,13 @@ while loop:          ## While loop which will keep going until loop = False
     choice = input("Enter your choice [A-C]: ")
     print(choice)
      
-    if choice == 'A':     
+    if choice == 'A':
+        print("Creating Model")
+        buildModel()
+    elif choice == 'B':     
         userInput = input("Please enter file name/path: ")
         convertImage(userInput)
-    elif choice=='B':
+    elif choice=='C':
         # Canvas taken from https://www.youtube.com/watch?v=OdDCsxfI8S0
         print("Creating canvas (X canvas off when finished and select option one and enter 'image.png')")
         root = tk.Tk()
@@ -147,7 +169,7 @@ while loop:          ## While loop which will keep going until loop = False
         button=tk.Button(text="save",command=save)
         button.pack()
         root.mainloop()
-    elif choice=='C':
+    elif choice=='D':
         print("Exit")
         
         ## You can add your code or functions here
