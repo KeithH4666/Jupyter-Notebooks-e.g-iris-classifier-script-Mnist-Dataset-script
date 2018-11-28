@@ -69,6 +69,8 @@ def buildModel(imageFile):
 
 def convertImage(imagefile):
 
+    ## Really good reference for this : http://www.appstate.edu/~marshallst/GLY3455/lectures/9_Image_Processing.pdf
+
     ## Convert to greyscale
     im = Image.open(imagefile).convert('L')
 
@@ -80,8 +82,11 @@ def convertImage(imagefile):
 
     # Currently everything is in bytes 0 - 255 , we want to make this 0-1 
     im = [(255 - x) * 1.0 / 255.0 for x in im]
+    
+    ## need to reshape for our model, expects an array of length 1-D array of size 784
+    im =  np.array(list(im)).reshape(1,784)
 
-
+    ## Send the ready array to our build model function
     buildModel(im)
 ###
     #sess = tf.Session()
