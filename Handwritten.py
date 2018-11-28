@@ -21,6 +21,8 @@ def buildModel(imageFile):
 
     model = kr.models.Sequential()
 
+    ## https://machinelearningmastery.com/handwritten-digit-recognition-using-convolutional-neural-networks-python-keras/
+    ## Used this reference for dropout values as I was unsure why this was used 
     model.add(Dense(512, input_shape=(784,)))
     model.add(Activation('relu'))                            
     model.add(Dropout(0.2))
@@ -62,9 +64,11 @@ def buildModel(imageFile):
     outputs = encoder.transform(train_lbl)
     inputs = train_img.reshape(60000, 784)
 
+    print("Building neural network - May take a few mins!")
     model.fit(inputs, outputs, epochs=3, batch_size=100)
 
     #print(encoder.inverse_transform(model.predict(test_img[14:15])))
+    print("According to my network your number is: ")
     print(encoder.inverse_transform(model.predict(imageFile)))
 
 def convertImage(imagefile):
@@ -85,6 +89,8 @@ def convertImage(imagefile):
     
     ## need to reshape for our model, expects an array of length 1-D array of size 784
     im =  np.array(list(im)).reshape(1,784)
+
+    print("Image successfully converted! Sending To model")
 
     ## Send the ready array to our build model function
     buildModel(im)
@@ -141,8 +147,13 @@ def saveImages():
         cv2.imwrite('train-(' + str(x) + ')' + '_' + str(labels) + '.png', image)
 
 
-##saveImages()
-convertImage("train-(6)_[4].PNG")
-#buildModel()
+
+print("Welcome to Keiths Digit Recognition Script")
+print("------------------------------------------")
+userInput = input("Please enter file name/path: ")
+print("------------------------------------------")
+convertImage(userInput)
+print("Thanks for using my program!, RE-run to try again.")
+
 
 
