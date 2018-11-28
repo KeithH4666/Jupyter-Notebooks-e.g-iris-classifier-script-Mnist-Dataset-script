@@ -69,13 +69,20 @@ def buildModel(imageFile):
 
 def convertImage(imagefile):
 
+    ## Convert to greyscale
     im = Image.open(imagefile).convert('L')
 
-    tv = list(im.getdata())
+    ## Make sure image is resized
+    im= im.resize((28, 28), Image.BICUBIC)
 
-    tv = [(255 - x) * 1.0 / 255.0 for x in tv]
+    ## Convert to list
+    im = list(im.getdata())
 
-    buildModel(tv)
+    # Currently everything is in bytes 0 - 255 , we want to make this 0-1 
+    im = [(255 - x) * 1.0 / 255.0 for x in im]
+
+
+    buildModel(im)
 ###
     #sess = tf.Session()
 
@@ -130,7 +137,7 @@ def saveImages():
 
 
 ##saveImages()
-convertImage("train-(9)_[9].PNG")
+convertImage("train-(6)_[4].PNG")
 #buildModel()
 
 
