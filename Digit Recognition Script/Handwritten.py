@@ -82,9 +82,6 @@ def buildModel():
     
     print(str(ModelCreated))
 
-    #print("According to my network your number is: ")
-    #print(encoder.inverse_transform(model.predict(imageFile)))
-
 def CompareImage(imageFile):
     with gzip.open('dataset/train-labels-idx1-ubyte.gz', 'rb') as f:
         train_lbl = f.read()
