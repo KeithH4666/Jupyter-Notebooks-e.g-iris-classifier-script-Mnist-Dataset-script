@@ -22,7 +22,7 @@ dataset and train and test our model.
 A python script which elaberates more on our previous notebook. I created a python script which creates a model using keras which is used
 to train and test using the mnist dataset. I also have a function which takes in the user image and converts it so that it is ready 
 to be evaluated by our network. I also added a nice drawable canvas which I found online which lets the user draw a number and our network
-can also predict what number it is. All this is nicely displayed using a command prompt style user inteface.
+can also predict what number it is. All this is nicely displayed using a command prompt style user interface.
 
 5. **Script explanation Jupyter Notebook:** <br /> 
 A simple notebook explaining our python script we created previously. 
