@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 import PIL
 from PIL import Image, ImageDraw, ImageTk
 import tkinter as tk
+import os.path
+
 
 ## Function to build the model, need to have a folder called dataset on same level as the script
 ## .gz files must be located in here
@@ -77,10 +79,9 @@ def buildModel():
 
     # Train the model with our inputs(Images) and outputs (Labels)
     #print("Building neural network - May take a few mins!")
-    model.fit(inputs, outputs, epochs=5, batch_size=128)
+    model.fit(inputs, outputs, epochs=10, batch_size=128)
     model.save('Mnist')
     
-    print(str(ModelCreated))
 
 def CompareImage(imageFile):
     with gzip.open('dataset/train-labels-idx1-ubyte.gz', 'rb') as f:
@@ -120,6 +121,7 @@ def convertImage(imagefile):
     CompareImage(im)
 
 def print_menu():       
+    
     print("-" * 15 , "Welcome to Keiths Digit Recognition Script" , 15 * "-")
     print("A. Create Model (Must do this first) " + "Model Created: " + str(ModelCreated))
     print("B. Select your own image")
@@ -127,9 +129,16 @@ def print_menu():
     print("D. Exit")
    
   
-loop=True      
+loop=True 
+
+## Check if model is created
+
   
-while loop:          ## While loop which will keep going until loop = False
+while loop:     
+         ## While loop which will keep going until loop = False
+    if os.path.isfile('Mnist'):
+        ModelCreated = True
+
     print_menu()    ## Displays menu
     choice = input("Enter your choice [A-C]: ")
     print(choice)
@@ -137,7 +146,6 @@ while loop:          ## While loop which will keep going until loop = False
     if choice == 'A':
         print("Creating Model")
         buildModel()
-        ModelCreated = True
     elif choice == 'B':     
         userInput = input("Please enter file name/path: ")
         convertImage(userInput)
